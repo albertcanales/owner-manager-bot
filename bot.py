@@ -1,8 +1,6 @@
 from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler
-import utils
-
-itemlists = {}
+import db
 
 def start(update, context):
     message = """
@@ -26,12 +24,11 @@ I'm very simple! Here's my commands:
 def mkitem(update, context):
     params = get_parameters(update, context)
     if params:
-        owner = update.message.from_user
-        itemlist = get_itemlist(update.message.chat_id)
-        if utils.mkitem(itemlist, params[0], owner):
-            send_message(update, context, "Item created successfully")
+        owner = user_serializable(update.message.from_user)
+        if db.mkitem(update.message.chat_id, params[0], owner):
+            send_message(update, context, "ℹ️ Item created successfully")
         else:
-            send_message(update, context, "Item already exists")
+            send_message(update, context, "🚫 Item already exists")
     else:
         send_parameters_error(update, context);
 
@@ -39,9 +36,8 @@ def mkitem(update, context):
 def rmitem(update, context):
     params = get_parameters(update, context)
     if params:
-        owner = update.message.from_user
-        itemlist = get_itemlist(update.message.chat_id)
-        if utils.rmitem(itemlist, params[0]):
+        owner = user_serializable(update.message.from_user)
+        if db.rmitem(update.message.chat_id, params[0]):
             send_message(update, context, "ℹ️ Item removed successfully")
         else:
             send_message(update, context, "🚫 Item does not exists")
@@ -51,9 +47,8 @@ def rmitem(update, context):
 def chown(update, context):
     params = get_parameters(update, context)
     if params:
-        owner = update.message.from_user
-        itemlist = get_itemlist(update.message.chat_id)
-        if utils.chown(itemlist, params[0], owner):
+        owner = user_serializable(update.message.from_user)
+        if db.chown(update.message.chat_id, params[0], owner):
             send_message(update, context, "ℹ️ Changed ownership successfully")
         else:
             send_message(update, context, "🚫 Item does not exists")
@@ -61,22 +56,24 @@ def chown(update, context):
         send_parameters_error(update, context);
 
 def status(update, context):
-    itemlist = get_itemlist(update.message.chat_id)
-    message = utils.status(itemlist, get_user_name)
+    message = db.status(update.message.chat_id, get_user_name)
     if message:
         send_message(update, context, message)
     else:
         send_message(update, context, "ℹ️ There are no items")
 
-def get_itemlist(chat_id):
-    if chat_id not in itemlists.keys():
-        itemlists[chat_id] = {}
-    return itemlists[chat_id]
+def user_serializable(user):
+    result = {
+        'id': user.id,
+        'first_name': user.first_name,
+        'last_name': user.last_name
+    }
+    return result
 
 def get_user_name(user):
-    result = user.first_name
-    if user.last_name:
-        result += " " + user.last_name
+    result = user['first_name']
+    if user['last_name']:
+        result += " " + user['last_name']
     return result
 
 def send_parameters_error(update, context):
