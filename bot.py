@@ -94,8 +94,10 @@ def get_parameters(update, context):
 def main():
 
     print("Starting bot...")
-
-    TOKEN = open('token.txt').read().strip()
+    try:
+        TOKEN = open('token.txt').read().strip()
+    except OSError:
+        raise OSError
     updater = Updater(token=TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
