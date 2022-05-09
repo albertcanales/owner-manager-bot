@@ -5,7 +5,7 @@
 
 
 # Config variables
-SOURCE_HTTP="https://github.com/canales2002/owner-manager-bot.git"
+SOURCE_HTTP="https://github.com/albertcanales/owner-manager-bot.git"
 TARGET_PATH="/opt/owner-manager-bot/"
 LOG_FILE="/var/log/owner-manager-bot.log"
 SYSTEMD_PATH="/etc/systemd/system"

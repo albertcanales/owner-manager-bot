@@ -18,7 +18,7 @@ The script `install.sh` automatically installs the bot, its dependencies and ena
 If you don't want to do any changes, you can use the following one-liner for the installation:
 
 ```
-wget -qO - https://raw.githubusercontent.com/canales2002/owner-manager-bot/main/install.sh | sudo bash
+wget -qO - https://raw.githubusercontent.com/albertcanales/owner-manager-bot/main/install.sh | sudo bash
 ```
 
 ## Suggestions
